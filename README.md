@@ -1,4 +1,4 @@
 ToDo
 ====
 
-ToDo App by prototype
+Todo Application using prototype
