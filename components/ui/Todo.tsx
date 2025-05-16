@@ -102,6 +102,7 @@ export function Todo({ item, onToggle, onDelete, isToggling, isDeleting }: TodoP
 
   return (
     <Animated.View 
+      testID="todo-container"
       style={[
         styles.container,
         {
@@ -119,14 +120,16 @@ export function Todo({ item, onToggle, onDelete, isToggling, isDeleting }: TodoP
       ]}
     >
       <TouchableOpacity 
+        testID="checkbox-button"
         style={styles.checkbox} 
         onPress={() => handlePress(item.id)}
         disabled={isToggling}
       >
         {isToggling ? (
-          <ActivityIndicator size="small" color="#4CAF50" />
+          <ActivityIndicator testID="loading-indicator" size="small" color="#4CAF50" />
         ) : (
           <MaterialIcons
+            testID="checkbox-icon"
             name={item.completed ? "check-box" : "check-box-outline-blank"}
             size={24}
             color={item.completed ? "#4CAF50" : "#757575"}
@@ -135,6 +138,7 @@ export function Todo({ item, onToggle, onDelete, isToggling, isDeleting }: TodoP
       </TouchableOpacity>
       
       <Animated.Text 
+        testID="todo-text"
         style={[
           styles.text,
           item.completed && styles.completedText,
@@ -144,14 +148,20 @@ export function Todo({ item, onToggle, onDelete, isToggling, isDeleting }: TodoP
       </Animated.Text>
       
       <TouchableOpacity 
+        testID="delete-button"
         style={styles.deleteButton}
         onPress={() => handlePressDelete(item.id)}
         disabled={isDeleting}
       >
         {isDeleting ? (
-          <ActivityIndicator size="small" color="#FF5252" />
+          <ActivityIndicator testID="loading-indicator" size="small" color="#FF5252" />
         ) : (
-          <MaterialIcons name="delete" size={24} color="#FF5252" />
+          <MaterialIcons 
+            testID="delete-icon"
+            name="delete" 
+            size={24} 
+            color="#FF5252" 
+          />
         )}
       </TouchableOpacity>
     </Animated.View>
