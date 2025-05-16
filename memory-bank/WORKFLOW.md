@@ -33,16 +33,11 @@ memory-bank/
 ## 🔄 Feature Development Workflow
 
 ### High-Level Flow
-
 ```mermaid
-
 VAN > PLAN > CREATIVE > VAN QA > BUILD > QA -> DOC update
-
 ```
 
-
 ```mermaid
-
 VAN L1/L2/L3/L4 > 
 PLAN L1/L2/L3/L4 > 
 CREATIVE UI/ARCH/DATA/ALGO > 
@@ -51,6 +46,16 @@ BUILD >
 QA -> 
 DOC update
 ```
+
+
+### Quick Reference
+- **VAN**: Task Analysis (L1-L4)
+- **PLAN**: Implementation Planning
+- **CREATIVE**: Design (UI/ARCH/DATA/ALGO)
+- **VAN QA**: Technical Validation
+- **BUILD**: Implementation
+- **QA**: Testing
+- **DOC**: Documentation Update
 
 ## 📋 Available Commands
 
