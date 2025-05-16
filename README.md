@@ -58,6 +58,17 @@ MyApp/
 
 ## Development
 
+### Memory Bank Commands
+
+This project uses a structured development workflow managed through Memory Bank commands. For a complete list of available commands and their usage, see [COMMANDS.md](COMMANDS.md).
+
+Key commands:
+- `VAN` - Initialize new task
+- `PLAN` - Plan implementation
+- `CREATIVE` - Design phase
+- `BUILD` - Implementation phase
+- `QA` - Quality validation
+
 ### Key Components
 
 - `Todo.tsx`: Main todo item component with animations
