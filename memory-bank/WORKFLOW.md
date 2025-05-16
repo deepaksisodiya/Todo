@@ -156,7 +156,7 @@ What happens:
 
 ### 7️⃣ DOC Update
 ```bash
-DOC
+DOC update
 ```
 Updates project documentation.
 
@@ -258,24 +258,6 @@ AI: Updating system documentation...
    - Run VAN QA before implementation
    - Perform QA after implementation
 
-## 🚫 Common Pitfalls
-
-1. **Skipping Planning**
-   - Always do basic planning, even for L1
-   - Prevents scope creep and issues
-
-2. **Bypassing VAN QA**
-   - Technical validation prevents issues
-   - Required before BUILD mode
-
-3. **Insufficient Documentation**
-   - Document decisions and changes
-   - Future maintenance depends on good docs
-
-4. **Wrong Level Selection**
-   - Be realistic about complexity
-   - Better to start higher than too low
-
 ## 🆘 Troubleshooting
 
 ### Mode Switching Issues
@@ -298,12 +280,3 @@ AI: Updating system documentation...
 > VAN QA
 # Must pass VAN QA first
 ```
-
-## 📚 Additional Resources
-
-- Memory Bank structure guide
-- Task templates
-- QA checklists
-- Documentation templates
-
-Remember: The Memory Bank system is designed to ensure quality and maintainability. Follow the workflow, and don't skip steps! 
