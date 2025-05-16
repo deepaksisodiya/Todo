@@ -33,19 +33,12 @@ export class StorageUtils {
     try {
       return await operation();
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (retries < this.MAX_RETRIES) {
-        const retryFn = async () => {
-          await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY));
-          return this.retry(operation, type, key, retries + 1);
-        };
-        throw new StorageError(
-          type,
-          `Storage operation failed: ${errorMessage}. Retry ${retries + 1}/${this.MAX_RETRIES}`,
-          key,
-          retryFn as () => Promise<void>
-        );
+      if (retries < this.MAX_RETRIES - 1) {
+        await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY));
+        return this.retry(operation, type, key, retries + 1);
       }
+      
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new StorageError(
         type,
         `Storage operation failed after ${this.MAX_RETRIES} retries: ${errorMessage}`,

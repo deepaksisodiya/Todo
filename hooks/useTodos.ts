@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { TodoItem } from '../components/ui/Todo';
 import { STORAGE_KEYS, StorageError, StorageUtils } from '../utils/storage';
 
@@ -24,6 +24,16 @@ export function useTodos() {
       delete: false,
     },
   });
+
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  const setLoadingState = useCallback((action: keyof TodoState['actionLoading'], isLoading: boolean) => {
+    setState(current => ({
+      ...current,
+      actionLoading: { ...current.actionLoading, [action]: isLoading },
+    }));
+  }, []);
 
   // Load todos from storage on mount
   useEffect(() => {
@@ -64,10 +74,7 @@ export function useTodos() {
   }, []);
 
   const addTodo = useCallback(async (text: string) => {
-    setState(current => ({
-      ...current,
-      actionLoading: { ...current.actionLoading, add: true },
-    }));
+    setLoadingState('add', true);
 
     const newTodo: TodoItem = {
       id: Date.now().toString(),
@@ -76,7 +83,7 @@ export function useTodos() {
     };
 
     try {
-      const newTodos = [...state.todos, newTodo];
+      const newTodos = [...stateRef.current.todos, newTodo];
       await saveTodos(newTodos);
       setState(current => ({
         ...current,
@@ -84,22 +91,21 @@ export function useTodos() {
         actionLoading: { ...current.actionLoading, add: false },
       }));
     } catch (error) {
+      setLoadingState('add', false);
       setState(current => ({
         ...current,
-        actionLoading: { ...current.actionLoading, add: false },
         error: error instanceof StorageError ? error.message : 'Failed to add todo',
       }));
+      throw error;
     }
-  }, [saveTodos, state.todos]);
+  }, [saveTodos, setLoadingState]);
 
   const toggleTodo = useCallback(async (id: string) => {
-    setState(current => ({
-      ...current,
-      actionLoading: { ...current.actionLoading, toggle: true },
-    }));
+    setLoadingState('toggle', true);
+    const originalTodos = stateRef.current.todos;
 
     try {
-      const newTodos = state.todos.map(todo =>
+      const newTodos = originalTodos.map(todo =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       );
       await saveTodos(newTodos);
@@ -109,22 +115,21 @@ export function useTodos() {
         actionLoading: { ...current.actionLoading, toggle: false },
       }));
     } catch (error) {
+      setLoadingState('toggle', false);
       setState(current => ({
         ...current,
-        actionLoading: { ...current.actionLoading, toggle: false },
         error: error instanceof StorageError ? error.message : 'Failed to toggle todo',
       }));
+      throw error;
     }
-  }, [saveTodos, state.todos]);
+  }, [saveTodos, setLoadingState]);
 
   const deleteTodo = useCallback(async (id: string) => {
-    setState(current => ({
-      ...current,
-      actionLoading: { ...current.actionLoading, delete: true },
-    }));
+    setLoadingState('delete', true);
+    const originalTodos = stateRef.current.todos;
 
     try {
-      const newTodos = state.todos.filter(todo => todo.id !== id);
+      const newTodos = originalTodos.filter(todo => todo.id !== id);
       await saveTodos(newTodos);
       setState(current => ({
         ...current,
@@ -132,13 +137,14 @@ export function useTodos() {
         actionLoading: { ...current.actionLoading, delete: false },
       }));
     } catch (error) {
+      setLoadingState('delete', false);
       setState(current => ({
         ...current,
-        actionLoading: { ...current.actionLoading, delete: false },
         error: error instanceof StorageError ? error.message : 'Failed to delete todo',
       }));
+      throw error;
     }
-  }, [saveTodos, state.todos]);
+  }, [saveTodos, setLoadingState]);
 
   const retryLastOperation = useCallback(async () => {
     setState(current => ({

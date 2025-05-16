@@ -72,7 +72,7 @@
 
 ## Testing Strategy
 ### Unit Tests
-- [ ] Storage utilities
+- [x] Storage utilities
 - [ ] Hook logic
 - [ ] Validation functions
 - [ ] Animation utilities
