@@ -143,6 +143,113 @@ memory-bank/
 | Need to change modes | Use appropriate mode command (`PLAN`, `CREATIVE`, etc.) |
 | Documentation needed | Use `DOC CREATE` or `DOC UPDATE` |
 
+## 🔍 VAN Mode Details
+
+## 📘 Comprehensive VAN Mode Guide
+
+### What is VAN Mode?
+VAN (Validation and Analysis) mode serves as the entry point for any new task or feature. It initializes the system, loads validation rules, and begins technical analysis of your task.
+
+### Starting VAN Mode
+
+When you type `VAN` in chat:
+- Current operations are paused
+- Validation rules are loaded
+- Technical analysis begins
+
+### Detailed Command Structure
+
+#### Basic Commands
+```bash
+VAN           # Basic initialization
+VAN QA        # Technical validation
+```
+
+#### Complexity-Based Commands
+```bash
+VAN L1        # Quick bug fix/small feature (1-2 hours)
+VAN L2        # Simple enhancement (2-4 hours)
+VAN L3        # Intermediate feature (4-8 hours)
+VAN L4        # Complex system (8+ hours)
+```
+
+### Mode Transition Paths
+
+| Complexity | Transition Path |
+|------------|----------------|
+| L1 | VAN → BUILD |
+| L2 | VAN → PLAN → CREATIVE → BUILD |
+| L3 | VAN → PLAN → CREATIVE → BUILD |
+| L4 | VAN → PLAN → CREATIVE → BUILD (with iterations) |
+
+### Example Scenarios
+
+#### 1. Adding a Small Feature (L1)
+```
+YOU: VAN L1
+AI: Analyzing for Level 1 task...
+YOU: Add a button to clear all completed todos
+AI: [Creates task structure for L1]
+```
+
+#### 2. Technical Validation
+```
+YOU: VAN QA
+AI: Running technical validation...
+[System performs:]
+- Dependency checks
+- Configuration validation
+- Environment verification
+- Build tests
+```
+
+#### 3. Complex Feature (L3)
+```
+YOU: VAN L3
+AI: Analyzing for Level 3 task...
+YOU: Add categories to todos
+AI: [Creates comprehensive task structure]
+```
+
+### VAN QA Validation Process
+
+1. **Dependency Validation**
+   - Package versions
+   - Required tools
+   - System dependencies
+
+2. **Configuration Check**
+   - Environment settings
+   - Build configurations
+   - Project structure
+
+3. **Technical Verification**
+   - Code quality checks
+   - Build process validation
+   - Test coverage analysis
+
+### VAN Mode Best Practices
+
+1. **Task Initialization**
+   - Always begin new tasks with VAN
+   - Choose appropriate complexity level (L1-L4)
+   - Wait for initialization completion
+
+2. **Validation Usage**
+   - Run VAN QA before major changes
+   - Address validation issues immediately
+   - Document validation results
+
+3. **Mode Transitions**
+   - Follow recommended transition paths
+   - Complete each mode fully
+   - Verify completion before transitions
+
+4. **Documentation**
+   - Record complexity decisions
+   - Document validation results
+   - Keep task tracking updated
+
 ## 🎯 Best Practices
 
 1. Always start with `VAN` for new tasks
