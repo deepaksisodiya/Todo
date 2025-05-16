@@ -1,12 +1,18 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Todo } from '../../components/ui/Todo';
-import { TodoInput } from '../../components/ui/TodoInput';
-import { useTodos } from '../../hooks/useTodos';
+import { ErrorBoundary } from '../components/ui/ErrorBoundary';
+import { Todo } from '../components/ui/Todo';
+import { TodoInput } from '../components/ui/TodoInput';
+import { useTodos } from '../hooks/useTodos';
+import { errorReporter } from '../utils/errorReporting';
 
 export default function TodoScreen() {
   const insets = useSafeAreaInsets();
   const { todos, isLoading, error, addTodo, toggleTodo, deleteTodo, retryLastOperation } = useTodos();
+
+  const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
+    errorReporter.reportComponentError(error, errorInfo);
+  };
 
   const renderError = () => (
     <View style={styles.errorContainer}>
@@ -17,50 +23,60 @@ export default function TodoScreen() {
     </View>
   );
 
-  if (isLoading) {
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <View style={[styles.container, styles.centerContent]}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+        </View>
+      );
+    }
+
     return (
-      <View style={[styles.container, styles.centerContent, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Todo List</Text>
+          <Text style={styles.subtitle}>
+            {todos.length} task{todos.length !== 1 ? 's' : ''}
+          </Text>
+        </View>
+
+        <TodoInput onAdd={addTodo} />
+
+        {error ? (
+          renderError()
+        ) : (
+          <FlatList
+            data={todos}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Todo
+                item={item}
+                onToggle={toggleTodo}
+                onDelete={deleteTodo}
+              />
+            )}
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  No todos yet. Add one above!
+                </Text>
+              </View>
+            }
+          />
+        )}
       </View>
     );
-  }
+  };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Todo List</Text>
-        <Text style={styles.subtitle}>
-          {todos.length} task{todos.length !== 1 ? 's' : ''}
-        </Text>
+    <ErrorBoundary onError={handleError}>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
+        {renderContent()}
       </View>
-
-      <TodoInput onAdd={addTodo} />
-
-      {error ? (
-        renderError()
-      ) : (
-        <FlatList
-          data={todos}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <Todo
-              item={item}
-              onToggle={toggleTodo}
-              onDelete={deleteTodo}
-            />
-          )}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                No todos yet. Add one above!
-              </Text>
-            </View>
-          }
-        />
-      )}
-    </View>
+    </ErrorBoundary>
   );
 }
 
@@ -124,4 +140,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-});
+}); 
