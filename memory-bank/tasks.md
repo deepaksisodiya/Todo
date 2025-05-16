@@ -235,3 +235,69 @@ Add the ability to edit existing todo items:
 2. ✅ Edit mode UI is intuitive
 3. ✅ Changes persist after app restart
 4. ✅ Input validation works correctly 
+
+## Quick Feature Addition: Show/Hide Completed Filter 🔍
+
+### Level: 1 (Quick Enhancement)
+Type: Feature
+Complexity: Low
+Estimated Time: 1-2 hours
+Status: 🟡 In Progress
+
+### Implementation Plan
+
+#### Step 1: Storage Setup
+- [x] Add SHOW_COMPLETED to STORAGE_KEYS
+- [x] Update storage.ts type definitions
+- [x] Add migration handling for existing users
+
+#### Step 2: Hook Updates
+- [x] Add showCompleted to TodoState interface
+- [x] Add filter state management
+- [x] Implement toggleShowCompleted function
+- [x] Add filtered todos logic
+- [x] Update hook return values
+
+#### Step 3: UI Implementation
+- [x] Add filter toggle button to header
+  - [x] Use MaterialIcons filter_list icon
+  - [x] Add toggle animation
+  - [x] Style active/inactive states
+- [x] Update empty state messages
+  - [x] Show different message when filtered
+  - [x] Add transition animation
+
+#### Step 4: Testing & Validation
+- [ ] Test filter persistence
+- [ ] Verify UI state updates
+- [ ] Check empty state messages
+- [ ] Validate animations
+- [ ] Test error handling
+
+### Success Metrics
+1. [x] Filter toggle works correctly
+2. [x] UI clearly shows filter state
+3. [ ] Filter persists after app restart
+4. [x] Smooth UI transitions
+5. [x] Error handling works correctly
+
+### Dependencies
+- ✅ Using @expo/vector-icons
+- ✅ Using existing storage utilities
+- ✅ Using existing error handling
+
+### Rollback Plan
+1. Remove SHOW_COMPLETED from storage keys
+2. Revert hook changes
+3. Remove UI components
+4. Clear stored preferences
+
+## Dependencies
+- ✅ Using existing components
+- ✅ No new dependencies required
+
+### Success Criteria
+1. [ ] Filter toggle works correctly
+2. [ ] UI clearly shows filter state
+3. [ ] Filter persists after app restart
+4. [ ] Smooth UI transitions 

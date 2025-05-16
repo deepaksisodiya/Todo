@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
+import { FilterToggle } from '../components/ui/FilterToggle';
 import { LoadingOverlay } from '../components/ui/LoadingOverlay';
 import { Todo } from '../components/ui/Todo';
 import { TodoInput } from '../components/ui/TodoInput';
@@ -11,13 +12,16 @@ export default function TodoScreen() {
   const insets = useSafeAreaInsets();
   const { 
     todos, 
+    counts,
     isLoading, 
-    error, 
+    error,
+    showCompleted,
     actionLoading,
     addTodo, 
     toggleTodo, 
     deleteTodo,
     editTodo,
+    toggleShowCompleted,
     retryLastOperation 
   } = useTodos();
 
@@ -42,10 +46,19 @@ export default function TodoScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Todo List</Text>
-          <Text style={styles.subtitle}>
-            {todos.length} task{todos.length !== 1 ? 's' : ''}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Todo List</Text>
+            <Text style={styles.subtitle}>
+              {showCompleted 
+                ? `${counts.total} task${counts.total !== 1 ? 's' : ''}`
+                : `${counts.active} active task${counts.active !== 1 ? 's' : ''}`}
+            </Text>
+          </View>
+          <FilterToggle
+            active={showCompleted}
+            onToggle={toggleShowCompleted}
+            disabled={isLoading || counts.total === 0}
+          />
         </View>
 
         <TodoInput onAdd={addTodo} isLoading={actionLoading.add} />
@@ -72,7 +85,11 @@ export default function TodoScreen() {
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>
-                  No todos yet. Add one above!
+                  {counts.total === 0
+                    ? "No todos yet. Add one above!"
+                    : showCompleted
+                    ? "No todos yet. Add one above!"
+                    : "No active todos. All tasks completed!"}
                 </Text>
               </View>
             }
@@ -105,7 +122,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 16,
+  },
+  titleContainer: {
+    flex: 1,
   },
   title: {
     fontSize: 32,

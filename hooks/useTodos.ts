@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TodoItem } from '../components/ui/Todo';
 import { STORAGE_KEYS, StorageError, StorageUtils } from '../utils/storage';
 
@@ -6,6 +6,7 @@ interface TodoState {
   todos: TodoItem[];
   isLoading: boolean;
   error: string | null;
+  showCompleted: boolean;
   actionLoading: {
     add: boolean;
     toggle: boolean;
@@ -19,6 +20,7 @@ export function useTodos() {
     todos: [],
     isLoading: true,
     error: null,
+    showCompleted: true,
     actionLoading: {
       add: false,
       toggle: false,
@@ -36,6 +38,83 @@ export function useTodos() {
       actionLoading: { ...current.actionLoading, [action]: isLoading },
     }));
   }, []);
+
+  // Load todos and filter preference from storage on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [storedTodos, storedShowCompleted] = await Promise.all([
+          StorageUtils.load<TodoItem[]>(STORAGE_KEYS.TODOS),
+          StorageUtils.load<boolean>(STORAGE_KEYS.SHOW_COMPLETED)
+        ]);
+        
+        setState(current => ({
+          ...current,
+          todos: storedTodos || [],
+          showCompleted: storedShowCompleted ?? true,
+          isLoading: false,
+        }));
+      } catch (error) {
+        setState(current => ({
+          ...current,
+          isLoading: false,
+          error: error instanceof StorageError ? error.message : 'Failed to load todos',
+        }));
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Save filter preference
+  const saveFilterPreference = useCallback(async (showCompleted: boolean) => {
+    try {
+      await StorageUtils.save(STORAGE_KEYS.SHOW_COMPLETED, showCompleted);
+    } catch (error) {
+      setState(current => ({
+        ...current,
+        error: error instanceof StorageError ? error.message : 'Failed to save filter preference',
+      }));
+      throw error;
+    }
+  }, []);
+
+  // Toggle filter with optimistic update
+  const toggleShowCompleted = useCallback(async () => {
+    const newShowCompleted = !stateRef.current.showCompleted;
+    
+    // Optimistic update
+    setState(current => ({
+      ...current,
+      showCompleted: newShowCompleted,
+      error: null,
+    }));
+
+    try {
+      await saveFilterPreference(newShowCompleted);
+    } catch (error) {
+      // Revert on error
+      setState(current => ({
+        ...current,
+        showCompleted: !newShowCompleted,
+        error: error instanceof StorageError ? error.message : 'Failed to update filter preference',
+      }));
+    }
+  }, [saveFilterPreference]);
+
+  // Get filtered todos with proper memoization
+  const filteredTodos = useMemo(() => {
+    return state.showCompleted 
+      ? state.todos 
+      : state.todos.filter(todo => !todo.completed);
+  }, [state.todos, state.showCompleted]);
+
+  // Calculate counts for display
+  const counts = useMemo(() => ({
+    total: state.todos.length,
+    completed: state.todos.filter(todo => todo.completed).length,
+    active: state.todos.filter(todo => !todo.completed).length,
+  }), [state.todos]);
 
   // Load todos from storage on mount
   useEffect(() => {
@@ -198,10 +277,13 @@ export function useTodos() {
 
   return {
     ...state,
+    todos: filteredTodos,
+    counts,
     addTodo,
     toggleTodo,
     deleteTodo,
     editTodo,
+    toggleShowCompleted,
     retryLastOperation,
   };
 } 
