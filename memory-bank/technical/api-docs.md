@@ -86,6 +86,42 @@ function AddTodo() {
 }
 ```
 
+### FilterToggle Component
+`components/ui/FilterToggle.tsx`
+
+A reusable toggle button component for filtering completed todos.
+
+#### Props
+```typescript
+interface FilterToggleProps {
+  active: boolean;             // Whether completed todos are shown
+  onToggle: () => void;       // Toggle callback
+  disabled?: boolean;         // Disable the toggle
+}
+```
+
+#### Features
+- Scale animation on press
+- Active/inactive states
+- Loading state support
+- Accessibility support
+- Haptic feedback
+
+#### Usage
+```tsx
+import { FilterToggle } from '../components/ui/FilterToggle';
+
+function TodoHeader() {
+  return (
+    <FilterToggle
+      active={showCompleted}
+      onToggle={toggleShowCompleted}
+      disabled={isLoading}
+    />
+  );
+}
+```
+
 ## Custom Hooks
 
 ### useTodos
@@ -97,27 +133,55 @@ Hook for managing todo items with persistence and error handling.
 ```typescript
 function useTodos(): {
   todos: TodoItem[];
+  counts: {
+    total: number;
+    completed: number;
+    active: number;
+  };
+  showCompleted: boolean;
   addTodo: (text: string) => Promise<void>;
   toggleTodo: (id: string) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
+  editTodo: (id: string, text: string) => Promise<void>;
+  toggleShowCompleted: () => Promise<void>;
   isLoading: boolean;
   error: Error | null;
+  actionLoading: {
+    add: boolean;
+    toggle: boolean;
+    delete: boolean;
+    edit: boolean;
+  };
 };
 ```
 
 #### Features
 - AsyncStorage persistence
-- Loading states
+- Loading states per action
 - Error handling
 - Optimistic updates
 - Retry mechanism
+- Filter state management
+- Task count tracking
 
 #### Usage
 ```tsx
 import { useTodos } from '../hooks/useTodos';
 
 function TodoApp() {
-  const { todos, addTodo, toggleTodo, deleteTodo, isLoading } = useTodos();
+  const { 
+    todos, 
+    counts,
+    showCompleted,
+    addTodo, 
+    toggleTodo,
+    deleteTodo,
+    editTodo,
+    toggleShowCompleted,
+    isLoading,
+    actionLoading
+  } = useTodos();
+  
   // Use the hook methods
 }
 ```

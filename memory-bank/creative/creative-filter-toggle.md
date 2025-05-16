@@ -7,33 +7,31 @@ Add a filter toggle button to show/hide completed todos with clear visual feedba
 
 ### 1. Filter Toggle Button
 ```jsx
-// Location: Header section, right side
-<TouchableOpacity 
-  style={[
-    styles.filterButton,
-    showCompleted && styles.filterButtonActive
-  ]}
-  onPress={toggleShowCompleted}
->
-  <MaterialIcons 
-    name="filter-list" 
-    size={24} 
-    color={showCompleted ? '#4CAF50' : '#666'} 
-  />
-</TouchableOpacity>
+<FilterToggle
+  active={showCompleted}
+  onToggle={toggleShowCompleted}
+  disabled={isLoading || counts.total === 0}
+/>
 ```
 
 #### Styling
 ```javascript
 filterButton: {
-  padding: 8,
+  padding: 12,
   borderRadius: 20,
   backgroundColor: 'transparent',
   marginLeft: 'auto',
+  minWidth: 44,
+  minHeight: 44,
+  justifyContent: 'center',
+  alignItems: 'center',
 },
 filterButtonActive: {
   backgroundColor: '#E8F5E9',
 },
+filterButtonDisabled: {
+  opacity: 0.5,
+}
 ```
 
 ### 2. Header Layout
@@ -42,12 +40,15 @@ filterButtonActive: {
   <View style={styles.titleContainer}>
     <Text style={styles.title}>Todo List</Text>
     <Text style={styles.subtitle}>
-      {filteredCount} of {totalCount} tasks
+      {showCompleted 
+        ? `${counts.total} task${counts.total !== 1 ? 's' : ''}`
+        : `${counts.active} active task${counts.active !== 1 ? 's' : ''}`}
     </Text>
   </View>
   <FilterToggle 
     active={showCompleted}
     onToggle={toggleShowCompleted}
+    disabled={isLoading || counts.total === 0}
   />
 </View>
 ```
@@ -69,7 +70,9 @@ titleContainer: {
 ```jsx
 <View style={styles.emptyContainer}>
   <Text style={styles.emptyText}>
-    {showCompleted 
+    {counts.total === 0
+      ? "No todos yet. Add one above!"
+      : showCompleted
       ? "No todos yet. Add one above!"
       : "No active todos. All tasks completed!"}
   </Text>
@@ -82,46 +85,29 @@ titleContainer: {
 ```javascript
 const scaleAnim = useRef(new Animated.Value(1)).current;
 
-const animatePress = () => {
+const animatePress = useCallback(() => {
   Animated.sequence([
     Animated.spring(scaleAnim, {
       toValue: 0.9,
-      duration: 100,
+      speed: 12,
+      bounciness: 8,
       useNativeDriver: true,
     }),
     Animated.spring(scaleAnim, {
       toValue: 1,
-      duration: 100,
+      speed: 12,
+      bounciness: 8,
       useNativeDriver: true,
     }),
   ]).start();
-};
-```
-
-### 2. Filter State Transition
-```javascript
-const filterAnim = useRef(new Animated.Value(1)).current;
-
-useEffect(() => {
-  Animated.sequence([
-    Animated.timing(filterAnim, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: true,
-    }),
-    Animated.timing(filterAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }),
-  ]).start();
-}, [showCompleted]);
+}, [scaleAnim]);
 ```
 
 ## Color Scheme
 - Active Filter: `#4CAF50` (Primary Green)
 - Active Background: `#E8F5E9` (Light Green)
 - Inactive: `#666666` (Gray)
+- Disabled: `#CCCCCC` (Light Gray)
 - Text: `#333333` (Dark Gray)
 - Subtitle: `#666666` (Gray)
 
@@ -130,37 +116,46 @@ useEffect(() => {
 - Clear color contrast for active/inactive states
 - Meaningful accessibility labels:
   ```jsx
-  accessibilityLabel={showCompleted 
-    ? "Hide completed todos" 
-    : "Show completed todos"}
+  accessibilityLabel={active ? "Hide completed todos" : "Show completed todos"}
   accessibilityRole="button"
-  accessibilityState={{ selected: showCompleted }}
+  accessibilityState={{ 
+    selected: active,
+    disabled 
+  }}
   ```
 
 ## User Interaction Flow
 1. User taps filter icon
-2. Button scales down briefly
+2. Button scales down briefly with spring animation
 3. Icon color changes
 4. Background fades in/out
 5. List updates with transition
-6. Empty state message updates if needed
+6. Task count updates
+7. Empty state message updates if needed
 
 ## Error States
 - If filter preference fails to save:
-  - Show toast message
-  - Maintain visual state
-  - Retry on next app launch
+  - Show error message
+  - Revert to previous state
+  - Enable retry through error UI
+  - Maintain visual feedback
 
 ## Implementation Notes
 1. Use `useMemo` for filtered list to optimize performance
-2. Implement smooth list transitions using `FlatList` props
+2. Implement smooth list transitions
 3. Maintain button state during loading
-4. Handle edge cases (all completed, no todos)
+4. Handle edge cases:
+   - All tasks completed
+   - No todos
+   - Loading states
+   - Error states
 
 ## Testing Checklist
-- [ ] Button responds to taps
-- [ ] Animations are smooth
-- [ ] State persists after reload
-- [ ] Empty states are correct
-- [ ] Accessibility works
-- [ ] Error states handled 
+- [x] Button responds to taps
+- [x] Animations are smooth
+- [x] State persists after reload
+- [x] Empty states are correct
+- [x] Accessibility works
+- [x] Error states handled
+- [x] Task counts update correctly
+- [x] Disabled states work properly 
