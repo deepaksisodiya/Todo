@@ -8,6 +8,7 @@ A modern, feature-rich Todo application built with React Native and Expo, focusi
 - 💾 Persistent storage with AsyncStorage
 - 🔄 Automatic data synchronization
 - 📱 Haptic feedback for better interaction
+- ✏️ Inline todo editing with validation
 - ⚡️ Optimized performance
 - 🛡️ Comprehensive error handling
 - 🎨 Modern and clean UI
@@ -71,14 +72,14 @@ Key commands:
 
 ### Key Components
 
-- `Todo.tsx`: Main todo item component with animations
+- `Todo.tsx`: Main todo item component with animations, editing, and haptic feedback
 - `TodoInput.tsx`: Input component with validation
 - `ErrorBoundary.tsx`: Error handling wrapper
 - `Toast.tsx`: Toast notification system
 
 ### Custom Hooks
 
-- `useTodos`: Todo management with persistence
+- `useTodos`: Todo management with persistence and editing support
 - `useThemeColor`: Theme management
 - `useColorScheme`: Color scheme detection
 

@@ -16,7 +16,8 @@ export default function TodoScreen() {
     actionLoading,
     addTodo, 
     toggleTodo, 
-    deleteTodo, 
+    deleteTodo,
+    editTodo,
     retryLastOperation 
   } = useTodos();
 
@@ -60,8 +61,10 @@ export default function TodoScreen() {
                 item={item}
                 onToggle={toggleTodo}
                 onDelete={deleteTodo}
+                onEdit={editTodo}
                 isToggling={actionLoading.toggle}
                 isDeleting={actionLoading.delete}
+                isEditing={actionLoading.edit}
               />
             )}
             contentContainerStyle={styles.list}

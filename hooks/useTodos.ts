@@ -10,6 +10,7 @@ interface TodoState {
     add: boolean;
     toggle: boolean;
     delete: boolean;
+    edit: boolean;
   };
 }
 
@@ -22,6 +23,7 @@ export function useTodos() {
       add: false,
       toggle: false,
       delete: false,
+      edit: false,
     },
   });
 
@@ -146,6 +148,30 @@ export function useTodos() {
     }
   }, [saveTodos, setLoadingState]);
 
+  const editTodo = useCallback(async (id: string, newText: string) => {
+    setLoadingState('edit', true);
+    const originalTodos = stateRef.current.todos;
+
+    try {
+      const newTodos = originalTodos.map(todo =>
+        todo.id === id ? { ...todo, text: newText } : todo
+      );
+      await saveTodos(newTodos);
+      setState(current => ({
+        ...current,
+        todos: newTodos,
+        actionLoading: { ...current.actionLoading, edit: false },
+      }));
+    } catch (error) {
+      setLoadingState('edit', false);
+      setState(current => ({
+        ...current,
+        error: error instanceof StorageError ? error.message : 'Failed to edit todo',
+      }));
+      throw error;
+    }
+  }, [saveTodos, setLoadingState]);
+
   const retryLastOperation = useCallback(async () => {
     setState(current => ({
       ...current,
@@ -175,6 +201,7 @@ export function useTodos() {
     addTodo,
     toggleTodo,
     deleteTodo,
+    editTodo,
     retryLastOperation,
   };
 } 

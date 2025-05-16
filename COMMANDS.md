@@ -75,13 +75,13 @@ Manage project documentation:
 ## 🚦 Mode Transitions
 
 ```mermaid
-graph LR
-    VAN[VAN Mode] --> PLAN[PLAN Mode]
+graph TD
+    VAN[VAN Mode] --> Complexity{Complexity Level?}
+    Complexity -->|L1| BUILD[BUILD Mode]
+    Complexity -->|L2-L4| PLAN[PLAN Mode]
     PLAN --> CREATIVE[CREATIVE Mode]
-    CREATIVE --> VANQA[VAN QA]
-    VANQA --> BUILD[BUILD Mode]
-    
-    QA[QA Mode] -.-> VAN & PLAN & CREATIVE & BUILD
+    CREATIVE --> BUILD
+    BUILD --> QA[QA Mode]
 ```
 
 ## ⚠️ Validation Requirements
