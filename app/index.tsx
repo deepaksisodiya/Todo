@@ -1,6 +1,7 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
+import { LoadingOverlay } from '../components/ui/LoadingOverlay';
 import { Todo } from '../components/ui/Todo';
 import { TodoInput } from '../components/ui/TodoInput';
 import { useTodos } from '../hooks/useTodos';
@@ -8,7 +9,16 @@ import { errorReporter } from '../utils/errorReporting';
 
 export default function TodoScreen() {
   const insets = useSafeAreaInsets();
-  const { todos, isLoading, error, addTodo, toggleTodo, deleteTodo, retryLastOperation } = useTodos();
+  const { 
+    todos, 
+    isLoading, 
+    error, 
+    actionLoading,
+    addTodo, 
+    toggleTodo, 
+    deleteTodo, 
+    retryLastOperation 
+  } = useTodos();
 
   const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
     errorReporter.reportComponentError(error, errorInfo);
@@ -25,11 +35,7 @@ export default function TodoScreen() {
 
   const renderContent = () => {
     if (isLoading) {
-      return (
-        <View style={[styles.container, styles.centerContent]}>
-          <ActivityIndicator size="large" color="#4CAF50" />
-        </View>
-      );
+      return <LoadingOverlay visible message="Loading your todos..." />;
     }
 
     return (
@@ -41,7 +47,7 @@ export default function TodoScreen() {
           </Text>
         </View>
 
-        <TodoInput onAdd={addTodo} />
+        <TodoInput onAdd={addTodo} isLoading={actionLoading.add} />
 
         {error ? (
           renderError()
@@ -54,6 +60,8 @@ export default function TodoScreen() {
                 item={item}
                 onToggle={toggleTodo}
                 onDelete={deleteTodo}
+                isToggling={actionLoading.toggle}
+                isDeleting={actionLoading.delete}
               />
             )}
             contentContainerStyle={styles.list}
@@ -73,7 +81,7 @@ export default function TodoScreen() {
 
   return (
     <ErrorBoundary onError={handleError}>
-      <View style={{ flex: 1, paddingTop: insets.top }}>
+      <View style={[styles.root, { paddingTop: insets.top }]}>
         {renderContent()}
       </View>
     </ErrorBoundary>
@@ -81,6 +89,9 @@ export default function TodoScreen() {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',

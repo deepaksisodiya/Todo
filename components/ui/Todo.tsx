@@ -1,5 +1,22 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  ActivityIndicator,
+  Animated,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  UIManager
+} from 'react-native';
+import { HapticFeedback } from '../../utils/haptics';
+import { Transitions } from '../../utils/transitions';
+
+// Enable LayoutAnimation for Android
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 export interface TodoItem {
   id: string;
@@ -11,36 +28,133 @@ interface TodoProps {
   item: TodoItem;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  isToggling?: boolean;
+  isDeleting?: boolean;
 }
 
-export function Todo({ item, onToggle, onDelete }: TodoProps) {
+export function Todo({ item, onToggle, onDelete, isToggling, isDeleting }: TodoProps) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    // Fade in animation when component mounts
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      ...Transitions.timing.medium,
+    }).start();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    // Haptic feedback before animation
+    await HapticFeedback.medium();
+
+    // Slide out and fade animation when deleting
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        ...Transitions.timing.quick,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        ...Transitions.timing.quick,
+      }),
+    ]).start(() => {
+      onDelete(id);
+    });
+  };
+
+  const handleToggle = async (id: string) => {
+    // Haptic feedback based on completion state
+    if (!item.completed) {
+      await HapticFeedback.success();
+    } else {
+      await HapticFeedback.light();
+    }
+
+    // Scale animation when toggling
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.95,
+        ...Transitions.timing.quick,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        ...Transitions.timing.quick,
+      }),
+    ]).start(() => {
+      Transitions.configureLayout('spring');
+      onToggle(id);
+    });
+  };
+
+  const handlePress = async (id: string) => {
+    if (!isToggling) {
+      await handleToggle(id);
+    }
+  };
+
+  const handlePressDelete = async (id: string) => {
+    if (!isDeleting) {
+      await handleDelete(id);
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      style={[
+        styles.container,
+        {
+          opacity: fadeAnim,
+          transform: [
+            { 
+              translateX: slideAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-100, 0]
+              })
+            },
+            { scale: scaleAnim }
+          ]
+        }
+      ]}
+    >
       <TouchableOpacity 
         style={styles.checkbox} 
-        onPress={() => onToggle(item.id)}
+        onPress={() => handlePress(item.id)}
+        disabled={isToggling}
       >
-        <MaterialIcons
-          name={item.completed ? "check-box" : "check-box-outline-blank"}
-          size={24}
-          color={item.completed ? "#4CAF50" : "#757575"}
-        />
+        {isToggling ? (
+          <ActivityIndicator size="small" color="#4CAF50" />
+        ) : (
+          <MaterialIcons
+            name={item.completed ? "check-box" : "check-box-outline-blank"}
+            size={24}
+            color={item.completed ? "#4CAF50" : "#757575"}
+          />
+        )}
       </TouchableOpacity>
       
-      <Text style={[
-        styles.text,
-        item.completed && styles.completedText
-      ]}>
+      <Animated.Text 
+        style={[
+          styles.text,
+          item.completed && styles.completedText,
+        ]}
+      >
         {item.text}
-      </Text>
+      </Animated.Text>
       
       <TouchableOpacity 
         style={styles.deleteButton}
-        onPress={() => onDelete(item.id)}
+        onPress={() => handlePressDelete(item.id)}
+        disabled={isDeleting}
       >
-        <MaterialIcons name="delete" size={24} color="#FF5252" />
+        {isDeleting ? (
+          <ActivityIndicator size="small" color="#FF5252" />
+        ) : (
+          <MaterialIcons name="delete" size={24} color="#FF5252" />
+        )}
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -63,6 +177,10 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     marginRight: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     flex: 1,
@@ -75,5 +193,9 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: 4,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }); 
