@@ -33,97 +33,24 @@ memory-bank/
 ## 🔄 Feature Development Workflow
 
 ### High-Level Flow
+
 ```mermaid
-graph TD
-    Start(["Start New Task"]) --> VAN["VAN Mode<br/>Task Analysis"]
-    
-    %% VAN Mode Decision
-    VAN --> ComplexityCheck{"Complexity<br/>Level?"}
-    ComplexityCheck -->|"L1<br/>(1-2 hrs)"| QuickPlan["Quick Planning"]
-    ComplexityCheck -->|"L2-L4<br/>(2+ hrs)"| PLAN["PLAN Mode<br/>Detailed Planning"]
-    
-    %% Planning Phase
-    QuickPlan --> Creative
-    PLAN --> Creative["CREATIVE Mode"]
-    
-    %% Creative Phases
-    Creative --> CreativeTypes{"Design<br/>Type?"}
-    CreativeTypes -->|"UI"| CreativeUI["UI/UX Design"]
-    CreativeTypes -->|"ARCH"| CreativeArch["Architecture"]
-    CreativeTypes -->|"DATA"| CreativeData["Data Model"]
-    CreativeTypes -->|"ALGO"| CreativeAlgo["Algorithms"]
-    
-    %% Merge Creative Outputs
-    CreativeUI & CreativeArch & CreativeData & CreativeAlgo --> VANQA["VAN QA<br/>Technical Validation"]
-    
-    %% Implementation Phase
-    VANQA --> QACheck{"Validation<br/>Passed?"}
-    QACheck -->|"No"| FixIssues["Fix Issues"]
-    FixIssues --> VANQA
-    QACheck -->|"Yes"| BUILD["BUILD Mode<br/>Implementation"]
-    
-    %% Testing Phase
-    BUILD --> QA["QA Mode<br/>Testing"]
-    QA --> TestCheck{"Tests<br/>Passed?"}
-    TestCheck -->|"No"| FixBugs["Fix Bugs"]
-    FixBugs --> QA
-    TestCheck -->|"Yes"| DOC["DOC Mode<br/>Update Documentation"]
-    
-    %% Completion
-    DOC --> Complete(["Task Complete"])
-    
-    %% Styling
-    style Start fill:#f9f,stroke:#333,stroke-width:2px
-    style Complete fill:#9f9,stroke:#333,stroke-width:2px
-    style VAN fill:#bbf,stroke:#333,stroke-width:2px
-    style PLAN fill:#bbf,stroke:#333,stroke-width:2px
-    style Creative fill:#fbf,stroke:#333,stroke-width:2px
-    style VANQA fill:#fbb,stroke:#333,stroke-width:2px
-    style BUILD fill:#bfb,stroke:#333,stroke-width:2px
-    style QA fill:#fbb,stroke:#333,stroke-width:2px
-    style DOC fill:#bff,stroke:#333,stroke-width:2px
-    style ComplexityCheck fill:#ff9,stroke:#333,stroke-width:2px
-    style CreativeTypes fill:#ff9,stroke:#333,stroke-width:2px
-    style QACheck fill:#ff9,stroke:#333,stroke-width:2px
-    style TestCheck fill:#ff9,stroke:#333,stroke-width:2px
+
+VAN > PLAN > CREATIVE > VAN QA > BUILD > QA -> DOC update
+
 ```
 
-### Flow Explanation
 
-1. **Start → VAN Mode**
-   - Begin with task analysis
-   - Determine complexity level
+```mermaid
 
-2. **Complexity Decision**
-   - L1: Quick planning (1-2 hours)
-   - L2-L4: Full PLAN mode (2+ hours)
-
-3. **CREATIVE Mode Options**
-   - UI: User interface design
-   - ARCH: System architecture
-   - DATA: Data modeling
-   - ALGO: Algorithm design
-
-4. **VAN QA Validation**
-   - Technical requirements
-   - Dependencies
-   - Build environment
-   - Must pass to proceed
-
-5. **BUILD Mode**
-   - Implementation
-   - Following design decisions
-   - Creating tests
-
-6. **QA Testing**
-   - Test execution
-   - Bug fixes if needed
-   - Validation against requirements
-
-7. **Documentation**
-   - Update all relevant docs
-   - Record implementation details
-   - Complete task documentation
+VAN L1/L2/L3/L4 > 
+PLAN L1/L2/L3/L4 > 
+CREATIVE UI/ARCH/DATA/ALGO > 
+VAN QA > 
+BUILD > 
+QA -> 
+DOC update
+```
 
 ## 📋 Available Commands
 
