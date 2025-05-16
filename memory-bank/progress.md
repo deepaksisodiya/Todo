@@ -10,7 +10,15 @@
 ### Testing Status
 - ✅ Storage Utilities: 100% coverage
 - ⏩ Hooks (useTodos): Skipped due to React test renderer complications
+- ✅ Validation Tests: Fixed rule order and test clarity
+- ✅ Transitions Tests: Fixed platform switching and UIManager mocking
 - 📊 Overall project: 21.74% statement coverage
+
+### Recent Updates
+- Fixed validation tests to match actual rule order and improve test clarity
+- Fixed transitions tests to properly handle platform switching and UIManager mocking
+- Added proper cleanup in transitions tests with beforeEach and afterAll hooks
+- Improved test documentation and error messages
 
 ### Known Issues
 - React test renderer complications with async state updates in useTodos hook
@@ -105,8 +113,8 @@
 📝 Unit Tests
 - [x] Storage utilities
 - [ ] Hook logic
-- [ ] Validation
-- [ ] Animations
+- [x] Validation
+- [x] Animations
 
 📝 Integration Tests
 - [ ] Data flow

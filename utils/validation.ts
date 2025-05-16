@@ -19,16 +19,16 @@ export interface ValidationResult {
 
 export const todoValidationRules: ValidationRule[] = [
   {
+    validate: (value: string) => !/^\s+$/.test(value),
+    message: 'Todo cannot contain only whitespace',
+  },
+  {
     validate: (value: string) => value.trim().length > 0,
     message: 'Todo cannot be empty',
   },
   {
     validate: (value: string) => value.trim().length <= 100,
     message: 'Todo cannot be longer than 100 characters',
-  },
-  {
-    validate: (value: string) => !/^\s+$/.test(value),
-    message: 'Todo cannot contain only whitespace',
   },
   {
     validate: (value: string) => value.trim().length >= 3,
