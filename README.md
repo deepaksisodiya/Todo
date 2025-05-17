@@ -141,14 +141,68 @@ Optimizations implemented:
 
 ## Dependencies
 
-Key dependencies:
+### Main Dependencies
 
-```json
-{
-  "@react-native-async-storage/async-storage": "^2.1.2",
-  "expo-haptics": "^14.1.4"
-}
-```
+1. **@expo/vector-icons** (^14.1.0)
+   - Provides a comprehensive set of pre-made icons
+   - Includes popular icon sets like FontAwesome, MaterialIcons, etc.
+
+2. **@react-native-async-storage/async-storage** (^2.1.2)
+   - Asynchronous, persistent, key-value storage system
+   - Used for storing data locally on the device
+
+3. **@react-navigation** packages:
+   - **bottom-tabs** (^7.3.10): Implements bottom tab navigation
+   - **elements** (^2.3.8): Core navigation elements and components
+   - **native** (^7.1.6): Core navigation library for React Native
+
+4. **Expo** related packages:
+   - **expo** (^53.0.9): Main Expo framework
+   - **expo-blur** (^14.1.4): Blur view component effects
+   - **expo-constants** (^17.1.6): App constants and configuration
+   - **expo-font** (^13.3.1): Font loading and management
+   - **expo-haptics** (^14.1.4): Haptic feedback functionality
+   - **expo-image** (^2.1.7): Advanced image component
+   - **expo-linking** (^7.1.5): Deep linking and URL handling
+   - **expo-router** (^5.0.6): File-based routing system
+   - **expo-splash-screen** (^0.30.8): Splash screen management
+   - **expo-status-bar** (^2.2.3): Status bar management
+   - **expo-symbols** (^0.4.4): Symbol and icon system
+   - **expo-system-ui** (^5.0.7): System UI integration
+   - **expo-web-browser** (^14.1.6): In-app browser functionality
+
+5. **React and React Native core:**
+   - **react** (19.0.0): Core React library
+   - **react-dom** (19.0.0): React DOM for web support
+   - **react-native** (0.79.2): Core React Native framework
+   - **react-native-web** (^0.20.0): Web support for React Native
+
+6. **UI and Animation related:**
+   - **react-native-gesture-handler** (^2.24.0): Touch and gesture system
+   - **react-native-reanimated** (^3.17.4): Advanced animations library
+   - **react-native-safe-area-context** (5.4.0): Safe area handling
+   - **react-native-screens** (^4.10.0): Native navigation screens
+   - **react-native-webview** (13.13.5): Web content display
+
+### Development Dependencies
+
+1. **Build and Transpilation:**
+   - **@babel/core** (^7.25.2): JavaScript compiler
+   - **typescript** (^5.8.3): TypeScript support
+
+2. **Testing:**
+   - **@testing-library/jest-native** (^5.4.3): Native testing utilities
+   - **@testing-library/react-native** (^13.2.0): React Native testing utilities
+   - **@types/jest** (^29.5.14): TypeScript definitions for Jest
+   - **jest** (^29.7.0): Testing framework
+   - **jest-expo** (^53.0.5): Expo-specific Jest configuration
+
+3. **Type Definitions:**
+   - **@types/react** (^19.0.10): TypeScript definitions for React
+
+4. **Code Quality:**
+   - **eslint** (^9.25.0): Code linting
+   - **eslint-config-expo** (^9.2.0): Expo-specific ESLint configuration
 
 ## License
 
