@@ -1,5 +1,7 @@
 # Todo App
 
+> This project was entirely developed using video coding with Cursor IDE and Memory Bank, showcasing an innovative approach to software development that combines AI-assisted coding with structured documentation and workflow management.
+
 A modern, feature-rich Todo application built with React Native and Expo, focusing on smooth user experience and reliable data persistence.
 
 ## Features
